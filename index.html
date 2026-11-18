@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Exam Week 8-Bit</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap">
+<style>
+:root{--bg:#e0f8d0;--fg:#081820;--pan:#c4e8b0;--acc:#346856;--ok:#0f5a22;--okt:#fff;--bad:#a81e34;--hl:#f2d300;--mute:#2d5a47;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1d2b53;--fg:#fff1e8;--pan:#2a3a6e;--acc:#29adff;--ok:#00e436;--okt:#081820;--bad:#ff004d;--hl:#ffec27;--mute:#c2c3c7;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1d2b53;--fg:#fff1e8;--pan:#2a3a6e;--acc:#29adff;--ok:#00e436;--okt:#081820;--bad:#ff004d;--hl:#ffec27;--mute:#c2c3c7;color-scheme:dark}
+*{box-sizing:inherit}
+[hidden]{display:none!important}
+html,body{margin:0}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{background:var(--bg) repeating-linear-gradient(0deg,transparent 0 3px,rgba(0,0,0,.07) 3px 4px);color:var(--fg);font:22px/1.2 VT323,"Courier New",monospace}
+main{max-width:720px;margin:0 auto;padding:8px 14px 40px}
+h1{font:20px/1.4 "Press Start 2P",monospace;margin:12px 0;text-shadow:3px 3px 0 var(--acc)}
+.px{font:11px/1.7 "Press Start 2P",monospace;margin:10px 0}
+.sub{color:var(--mute)}
+.big{font-size:28px;line-height:1.1;margin:10px 0}
+.word{font:15px/1.6 "Press Start 2P",monospace;color:var(--ok)}
+.hud{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font:10px "Press Start 2P",monospace;max-width:720px;margin:0 auto;padding:10px 14px 0}
+.hud:empty{display:none}
+.pl{display:flex;align-items:center;gap:6px;padding:4px 8px;border:3px solid var(--fg)}.pl svg,.crew svg,.panel>svg{display:block}
+.pl.on{background:var(--hl);color:#081820}
+.btn{font:12px/1.5 "Press Start 2P",monospace;background:var(--pan);color:var(--fg);border:4px solid var(--fg);padding:12px 14px;margin:6px 6px 6px 0;cursor:pointer;box-shadow:4px 4px 0 var(--fg);text-align:left}
+.btn:hover:not(:disabled){background:var(--hl);color:#081820}
+.btn:active:not(:disabled){transform:translate(4px,4px);box-shadow:none}
+.btn:disabled{cursor:default}
+.btn.big{display:block;width:100%;font-size:13px;padding:16px;margin-right:0}
+.btn.sm{padding:6px 8px;font-size:10px;margin:0 0 0 auto}
+.btn.opt{display:block;width:100%;margin-right:0;font:22px/1.15 VT323,"Courier New",monospace}
+.btn.ok{background:var(--ok);color:var(--okt)}
+.btn.no{background:var(--bad);color:var(--okt)}
+.d{font:20px VT323,monospace;color:var(--mute);font-weight:400}
+.panel{background:var(--pan);border:4px solid var(--fg);padding:14px;margin:12px 0;box-shadow:4px 4px 0 var(--fg)}
+.fb{margin:10px 0;padding:8px 10px;border:4px solid var(--fg);background:var(--bg)}
+.fb.ok{border-color:var(--ok)}.fb.no{border-color:var(--bad)}
+.scene{border-left:8px solid var(--acc);padding-left:12px;font-size:25px;line-height:1.15;margin:14px 0}
+.q{font-size:25px;line-height:1.15}
+.lab{font:10px "Press Start 2P",monospace;margin:12px 0 4px}
+.bar{height:20px;border:4px solid var(--fg);background:var(--bg);position:relative}
+.bar i{position:absolute;inset:0 auto 0 0;background:repeating-linear-gradient(90deg,var(--acc) 0 12px,transparent 12px 16px)}
+.in{font:22px VT323,monospace;display:block;width:100%;background:var(--bg);color:var(--fg);border:4px solid var(--fg);padding:8px;margin:0 0 10px}
+.stats{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.tag{font:10px "Press Start 2P",monospace;border:3px solid var(--fg);padding:3px 6px}
+.hot{background:var(--hl);color:#081820;padding:3px 6px}
+.note{flex-basis:100%;border:4px solid var(--hl);padding:6px 8px;font:20px/1.2 VT323,monospace}.btn.sm2{font-size:10px;padding:8px;margin:0 4px 4px 0}.btn.on{background:var(--hl);color:#081820}.sw{width:44px;height:44px;border:4px solid var(--fg);margin:4px;padding:0;cursor:pointer}.sw.on{outline:4px solid var(--hl)}.wd{display:grid;grid-template-columns:auto 1fr;gap:12px}.crew{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;margin:10px 0}.crew>div{text-align:center}.bubble{display:inline-block;border:4px solid var(--fg);background:var(--bg);padding:4px 10px;margin:4px 0}.btn:disabled{opacity:.6}@media (max-width:560px){.wd{grid-template-columns:1fr}}
+.btn.pick{display:flex;flex-direction:column;align-items:center;gap:6px;margin:0}.btn.pick svg{display:block}
+.blink{animation:b 1s steps(2) infinite}
+@keyframes b{50%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.blink{animation:none}}
+button:focus-visible,input:focus-visible{outline:4px solid var(--hl);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="hud" id="hud"></div>
+<main id="app"></main>
+<script>
+var S={
+start:{k:"Polite refusal",t:"Monday, 7:40 a.m. Your final English exam is in five days. Your friend Mia texts: “All-night study session at my place tonight? Everyone’s coming.” You’re tired and a little overwhelmed.",q:"Which reply politely declines and suggests an alternative?",o:["No, I can’t. I have other things.","I’d love to, but I’m wiped out. Could we do a shorter session tomorrow instead?","I am not agree with this plan.","Maybe I come, maybe not."],a:1,w:"B softens the refusal (“I’d love to, but…”) and offers an alternative. A is blunt, C contains the typical “I am agree” error, and D is vague and ungrammatical.",c:[["Join the all-night session anyway","night",3],["Go to bed early","sleep",0],["Make a revision plan for the week","plan",1]]},
+night:{k:"Collocation: back up",t:"Tuesday. You’ve had three hours of sleep. In class, Mr Huber hands back your practice essay with a note: “Interesting ideas, but you need to ___ your claims with concrete examples.”",q:"Which phrasal verb completes the note?",o:["back out","back up","back off","back down"],a:1,w:"To back up a claim means to support it with evidence. Back out = withdraw from an agreement, back off = retreat, back down = give in.",c:[["Drink three coffees and keep cramming","mock",3],["Ask Mr Huber for advice after class","teacher",0]]},
+sleep:{k:"Get vs become",t:"Tuesday. You slept eight hours and feel sharp. In the class chat, someone asks how you’re coping with the stress.",q:"Which message is correct English?",o:["I became enough sleep, so I feel fine.","I got enough sleep, so I feel fine.","I have got become enough sleep, so I feel fine.","I made enough sleep, so I feel fine."],a:1,w:"German “bekommen” = get (or receive), not become. “Become” translates “werden”.",c:[["Revise vocabulary with a quiz","mock",1],["Practise speaking with a classmate","oral",1]]},
+plan:{k:"Formal register",t:"Tuesday. Your plan is stuck on the wall: writing on Wednesday, speaking on Thursday. Today’s task is the introduction to a practice essay on school.",q:"Which sentence suits a formal essay best?",o:["Lots of kids think school is a waste of time.","Many young people question the value of formal schooling.","Loads of teens reckon school is rubbish.","School is totally pointless, to be honest."],a:1,w:"B uses neutral, formal vocabulary (“young people”, “question the value of”). The others are colloquial or too absolute for an essay.",c:[["Do a timed practice essay","mock",2],["Practise speaking with a classmate","oral",1]]},
+teacher:{k:"Polite request",t:"Mr Huber has a few minutes after class. You want help with how to structure your essay.",q:"Which request sounds most polite and natural?",o:["Tell me what to do.","I was wondering if you could give me some advice on how to structure my essay.","Give me advice, please.","You must help me with the essay."],a:1,w:"“I was wondering if you could…” is a classic indirect request. The others are too direct or sound like orders.",c:[["Do a timed practice essay","mock",1],["Prepare for the speaking part","oral",1]]},
+mock:{k:"Linking: concession",t:"Wednesday. Writing practice. The topic: “Exams do more harm than good.” You want one balanced sentence in your introduction that links two ideas: exams cause stress, and exams motivate students.",q:"Which sentence combines them best?",o:["Exams cause stress, so they motivate students.","While exams undoubtedly cause stress, they can also motivate students to work harder.","Exams cause stress because they motivate students.","Exams cause stress, therefore motivate."],a:1,w:"“While… , …” expresses concession (contrast). A and C create a false cause-and-effect link, and D is ungrammatical.",c:[["Review the essay, then rest","exam",1],["Keep writing until midnight","exam",3]]},
+oral:{k:"Speculating",t:"Thursday. Speaking practice. Your partner holds up a photo: a student alone at a desk at night, laptop open, empty cups around.",q:"Which answer speculates best?",o:["He is surely very stressed, I know it.","He might be preparing for an exam. It looks as if he has been studying for hours.","He will be a hacker.","He is studying because it is night."],a:1,w:"Speculation needs hedging: “might be”, “it looks as if”. A and C sound too certain, and D states a weak reason as fact.",c:[["Record yourself and listen back","exam",1],["Do one more practice round","exam",2]]},
+exam:{k:"Paraphrasing",t:"Friday. The real exam. In the speaking part you suddenly forget the English word for “Lehrplan”.",q:"What is the best strategy?",o:["Say: “Sorry, I don’t know the word.”","Stay silent until you remember it.","Ask: “Wie sagt man Lehrplan auf Englisch?”","Say: “It’s the official plan that says what schools have to teach. I can’t think of the exact word.”"],a:3,w:"Paraphrasing keeps you speaking in English and shows range, which examiners reward. The other options stop the conversation or switch language.",c:[["Take a deep breath and finish the exam","end",0]]}
+};
+
+var B=[
+[1,"She has lived in Graz ___ 2019.",["for","since","from","ago"],1,"Use “since” with a point in time and “for” with a length of time."],
+[1,"Which phrasal verb means to leave school or university without finishing?",["drop in","drop off","drop out","drop by"],2,"To drop out = to quit before finishing a course."],
+[1,"I’m looking forward ___ the holidays.",["for","at","on","to"],3,"“Look forward to” is followed by a noun or an -ing form."],
+[1,"The lesson was so dull that I felt ___.",["boring","bored","bore","boredom"],1,"-ed adjectives describe feelings, -ing adjectives describe the cause."],
+[1,"In English, “gymnasium” most commonly refers to…",["a hall for sport and exercise","an academic secondary school","a vocational college","a university department"],0,"This is a false friend. The German “Gymnasium” is usually translated as “grammar school” or “academic secondary school”."],
+[1,"She is very interested ___ modern art.",["at","on","in","for"],2,"“Interested in” is the fixed combination."],
+[2,"Despite ___ hard, he failed the test.",["he studied","study","to study","studying"],3,"“Despite” is followed by a noun or an -ing form, not by a full clause."],
+[2,"You should ___ the deadline if you want a good grade.",["meet","catch","hold","do"],0,"The collocation is “meet a deadline”."],
+[2,"Which sentence is correct?",["I am agree with you.","I agree with you.","I agree to you.","I am agreeing of you."],1,"“Agree” is a verb, so “I am agree” (from German “ich bin einverstanden”) is a typical error."],
+[2,"Which sentence is correct?",["I became a new phone for my birthday.","I have become a new phone for my birthday.","I got a new phone for my birthday.","I am getting a new phone yesterday."],2,"German “bekommen” = get/receive. “Become” means “werden”."],
+[2,"The new curriculum aims to ___ critical thinking.",["foster","fill","fix","force"],0,"“Foster” means to encourage the development of something."],
+[2,"If I ___ more time, I would study abroad.",["have","has","would have","had"],3,"Second conditional: if + past simple, would + infinitive."],
+[3,"Hardly ___ the exam room when the fire alarm went off.",["she entered","had she entered","did she enter","she had entered"],1,"After a negative adverb such as “hardly”, the subject and auxiliary are inverted, and past perfect is used for the earlier action."],
+[3,"The proposal met with widespread ___, and the minister withdrew it.",["opposition","opposing","opposed","opponent"],0,"A noun is needed after “widespread”. “Opposition” is the uncountable noun."],
+[3,"“Rote learning” means…",["learning through discussion and projects","learning by repetition, often without deep understanding","learning from a teacher one-to-one","learning outside the classroom"],1,"Rote learning = memorising by repeating."],
+[3,"Which sentence has correct parallel structure?",["Students need to read widely, write clearly and to think critically.","Students need to read widely, write clearly and think critically.","Students need reading widely, write clearly and to think critically.","Students need to read widely, writing clearly and think critically."],1,"Items in a list must have the same grammatical form."],
+[3,"Which word is closest in meaning to “ubiquitous” in: “Smartphones are now ubiquitous among teenagers”?",["expensive","forbidden","found everywhere","outdated"],2,"Ubiquitous = present or found everywhere."],
+[3,"Not only ___ the exam, but she also won a scholarship.",["she passed","did she pass","passed she","she did pass"],1,"“Not only” at the start of a clause triggers inversion with “do”."],
+[3,"The headteacher insisted that every student ___ the form.",["signs","signed","sign","would signing"],2,"After verbs like “insist”, “demand” and “recommend”, the subjunctive (bare infinitive) is used."]
+];
+
+var V=[["accountability", "Taking responsibility for your actions"], ["achieve", "Reaching a specific target through effort"], ["adapt", "Adjusting or changing in response to new circumstances"], ["advocate", "Publicly supporting or arguing for something"], ["ambition", "Inner drive to get ahead and make something of yourself"], ["analyse", "Examining something carefully and in detail"], ["anxiety", "Feeling of worry or unease about something"], ["aspire", "Setting your sights on a future goal or role"], ["authenticity", "Being genuine and true to yourself"], ["balance", "Equilibrium between different parts of life"], ["bias", "Prejudice or unfair preference for or against something"], ["boundaries", "Limits you set on what is acceptable"], ["burnout", "Physical or mental exhaustion from prolonged stress"], ["cafeteria", "Dining facility for students"], ["campus", "Grounds of a school or university"], ["cliques", "Exclusive groups of friends with similar interests"], ["collaborate", "Working together with others toward a shared goal"], ["commit", "Dedicating yourself to something long-term"], ["community", "Group of people sharing common interests or location"], ["compromise (noun)", "Agreement where each side gives up something"], ["compromise (verb)", "Reaching agreement by each side giving something up"], ["confidence", "Belief in your own abilities and worth"], ["conflict", "Disagreement or clash between people"], ["cope", "Dealing with difficulty or stress"], ["credentials", "Qualifications that prove competence or authority"], ["critique", "Evaluating and giving constructive feedback"], ["curiosity", "Desire to learn and explore new things"], ["curriculum", "Structured set of courses and learning content"], ["debate", "Discussing opposing viewpoints formally"], ["deadline", "Final time limit for completing something"], ["delegate", "Assigning tasks or responsibility to others"], ["depression", "Mental health condition involving persistent sadness"], ["discipline", "Self-control and commitment to doing what is needed"], ["discuss", "Talking about a topic with others"], ["diversity", "Variety of different identities and perspectives"], ["dissertation", "Lengthy research project, usually for an advanced degree"], ["encourage", "Giving support or confidence to someone"], ["engage", "Actively participating or becoming involved"], ["empathy", "Ability to understand and share someone’s feelings"], ["ethics", "Principles of right and wrong behaviour"], ["exam", "Test to assess knowledge or understanding"], ["exercise", "Physical activity for fitness and health"], ["frustrate", "Causing annoyance or disappointment"], ["gap year", "Year off after school before university"], ["GPA", "Grade Point Average; numerical measure of academic performance"], ["grades", "Marks or ratings of academic performance"], ["growth mindset", "Belief that abilities can be developed through effort"], ["habit", "Behaviour repeated so often it becomes automatic"], ["hesitate", "Pausing or showing uncertainty before acting"], ["homework", "Academic work assigned to be done outside class"], ["identity", "Sense of self; who you believe you are"], ["improve", "Making something better or more effective"], ["inclusion", "Active effort to welcome and value all people"], ["individualism", "Prioritising personal goals over group needs"], ["inequality", "Unfair difference in opportunity or treatment"], ["inspire", "Motivating someone or filling them with creative energy"], ["integrate", "Combining parts into a unified whole"], ["interact", "Engaging with others through communication"], ["intervene", "Stepping in to help or stop a situation"], ["internship", "Temporary position providing work experience"], ["lecture", "Formal presentation of information to a class"], ["literacy", "Ability to read and write; understanding of a subject"], ["mentor (verb)", "Guiding and supporting someone’s development"], ["mentor (noun)", "Experienced person who guides and advises you"], ["motivation", "Drive or reason to take action"], ["negotiate", "Discussing terms to reach an agreement"], ["neglect", "Failing to give proper attention or care"], ["opportunity", "Favourable circumstance or chance for advancement"], ["overcome", "Successfully dealing with or defeating difficulty"], ["passion", "Strong emotion or intense enthusiasm for something"], ["pedagogy", "Method and practice of teaching"], ["peer", "Someone of equal standing, like a classmate"], ["peer pressure", "Push from those around you to follow the crowd"], ["persuade", "Convincing someone to believe or do something"], ["potential", "Capacity to develop or achieve in the future"], ["prioritise", "Ranking tasks or goals by importance"], ["procrastinate", "Delaying or postponing something unnecessarily"], ["privilege", "Unearned advantage based on identity or circumstance"], ["productivity", "Effectiveness in accomplishing tasks"], ["purpose", "The reason or intention behind your actions"], ["pursue", "Chasing or working toward a goal or interest"], ["reflect", "Thinking deeply about your experiences"], ["reflection", "Thoughtful consideration of experiences and choices"], ["resilience", "Ability to recover from difficulties; mental toughness"], ["resolve", "Finding a solution to a problem"], ["role model", "Person whose behaviour is worthy of imitation"], ["scholarship", "Financial aid for education; also advanced study"], ["screen time", "Time spent on digital devices"], ["self-awareness", "Understanding your own thoughts, feelings, and behaviour"], ["self-care", "Actions taken to maintain your own health"], ["self-conscious", "Feeling very aware of how others perceive you; experiencing discomfort from self-scrutiny"], ["seminar", "Small group, discussion-based class"], ["social media", "Online platforms for sharing and connecting"], ["social responsibility", "Obligation to act for the benefit of society"], ["struggle", "Making difficult efforts against resistance"], ["study", "Learning by reading and examining information"], ["succeed", "Doing well instead of failing"], ["support", "Providing help, encouragement, or resources"], ["tolerate", "Allowing or accepting something you dislike"], ["transition", "Movement from one stage or state to another"], ["tuition", "Cost of instruction and education"], ["uncertainty", "Lack of confidence about what will happen"], ["validate", "Confirming or giving official approval to something"], ["value", "Regarding someone or something as important"], ["volunteer", "Offering to do something of your own accord"], ["vulnerability", "Openness about weaknesses; emotional honesty"], ["wellness", "State of being healthy in body and mind"], ["work-life balance", "Managing time between career and personal life"], ["yield", "Producing something or giving way to something"]];
+var LV=["","WARM-UP","B2","C1"];
+var DU=[["a school with no grades","a school with no homework"],["a four-day school week with longer days","a five-day school week with shorter days"],["a gap year to travel and work","going straight from school to university"],["an online course taught by a world expert","a classroom with an average teacher and real classmates"],["a total phone ban at school","unlimited phone use, with no rules"],["choosing all your own school subjects","a fixed curriculum that guarantees a broad education"],["a well-paid job you find boring","a poorly paid job you are passionate about"],["friends who always agree with you","friends who always challenge you"],["an unpaid internship at a company you admire","a paid job unrelated to your goals"],["exams that test memory","projects that test creativity"],["grades visible to everyone","grades visible only to you"],["a strict but brilliant mentor","a kind but less experienced mentor"]];
+var HT=["A teacher who changed your life","Should school uniforms exist?","Social media and self-esteem","Is university worth the money?","Pressure to succeed","A skill every school should teach","Learning outside the classroom","Your ideal school day","Homework: help or harm?","Peer pressure","Studying abroad","Life after the Matura"];
+var $=function(s){return document.querySelector(s)},A=$("#app"),H=$("#hud"),T,ACT={},GM={};
+var esc=function(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})};
+var rnd=function(a){return a[Math.random()*a.length|0]};
+function shuf(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.random()*(i+1)|0,t=a[i];a[i]=a[j];a[j]=t}return a}
+var DB={};try{DB=JSON.parse(localStorage.getItem("exw8")||"{}")}catch(e){}
+DB.p=DB.p||{};
+function save(){try{localStorage.setItem("exw8",JSON.stringify(DB))}catch(e){}}
+function me(n){return DB.p[n]||(DB.p[n]={xp:0,w:{},qa:0,qc:0,best:0,talks:0,duels:0,cards:0})}
+var G={mode:"solo",names:["Player"],turn:0,on:0};
+function nm(){return G.names[G.turn%G.names.length]}
+function lv(n){return 1+(me(n).xp/100|0)}
+function give(n,x){var a=lv(n);me(n).xp+=x;save();if(lv(n)>a){var u=[];CAT.forEach(function(c){if(!c[3])c[2].forEach(function(it){if(it[1]===lv(n))u.push(it[0])})});G.note=esc(n)+" reached LV"+lv(n)+(u.length?"! Unlocked: "+u.join(", ")+".":"!");G.nl=3}hud()}
+function scr(h,k){clearInterval(T);if(G.nl>0&&--G.nl===0)G.note="";A.innerHTML=h;if(!k)window.scrollTo(0,0)}
+function timer(s,cb){var t=$("#tm");t.textContent=s;T=setInterval(function(){s--;t.textContent=s;if(s<=0){clearInterval(T);cb()}},1000)}
+function bar(a,b,l){return '<div class="lab">'+l+'</div><div class="bar"><i style="width:'+Math.min(100,a/b*100)+'%"></i></div>'}
+function hud(){H.innerHTML=G.on?G.names.map(function(n,i){return '<span class="pl'+(G.mode!=="solo"&&i===G.turn%G.names.length?" on":"")+'">'+AVS(n,1.5)+'<span>'+esc(n)+' LV'+lv(n)+' '+me(n).xp%100+'/100</span></span>'}).join("")+'<button class="btn sm" data-a="menu">Games</button><button class="btn sm2" data-a="home">Menu</button>'+(G.note?'<div class="note">★ '+G.note+' <button class="btn sm2" data-a="wd">Wardrobe</button></div>':""):""}
+document.addEventListener("click",function(e){var t=e.target.closest("[data-a]");if(t&&!t.disabled&&ACT[t.dataset.a])ACT[t.dataset.a](t.dataset.v,t)});
+
+
+/* ---- avatar and wardrobe ---- */
+var LINES=["Ready to level up?","Let’s smash this exam!","One more round, then a break.","Vocab first, nerves later.","You’ve got this. Seriously."];
+var SK=["#ffdbac","#f1c27d","#c68642","#8d5524","#5c3a21"],HC=["#1a1a1a","#6b3e1e","#e8c547","#c0392b","#29adff","#ff77a8"];
+var CAT=[["skin","Skin",SK.map(function(c){return[c,1]}),1],["hair","Hair",[["Spiky tips",1],["Bob",1],["Long",1],["Buzz cut",1],["Curly",1]]],["hc","Hair colour",HC.map(function(c){return[c,1]}),1],["top","Top",[["Baby tee",1],["Striped polo",1],["Velour tracksuit",2],["Football jersey",3],["Zip hoodie",4],["Layered tank",5]]],["bot","Bottom",[["Low-rise jeans",1],["Cargo pants",2],["Track pants",3],["Denim mini skirt",4],["Capri pants",5]]],["shoe","Shoes",[["Chunky sneakers",1],["Skate shoes",2],["Platform sneakers",3],["Flip-flops",4]]],["hat","Head",[["None",1],["Trucker cap",1],["Bucket hat",2],["Bandana",3],["Visor",4],["Butterfly clips",2]]],["face","Face",[["None",1],["Tiny shades",2],["Shutter shades",4],["Round glasses",1]]],["neck","Neck",[["None",1],["Puka shells",1],["Choker",2],["Chain",3],["MP3 earbuds",4]]]];
+var DEMO={skin:1,hair:0,hc:4,top:2,bot:0,shoe:0,hat:1,face:1,neck:1};
+function av(n){var p=me(n);return p.av||(p.av={skin:1+(Math.random()*3|0),hair:Math.random()*5|0,hc:Math.random()*6|0,top:Math.random()*2|0,bot:0,shoe:0,hat:0,face:0,neck:0})}
+function AVS(n,s){return AVd(av(n),s)}
+function AVd(a,s){var o="",sk=SK[a.skin],hc=HC[a.hc],k="#1a1c2c",hr=a.hair,b=a.bot,t=a.top,sh=a.shoe,f=a.face,h=a.hat,ne=a.neck,i;
+function r(x,y,w,h,c){o+='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" fill="'+c+'"/>'}
+if(hr===1||hr===2)r(4,3,8,7,hc);if(hr===4)r(3,2,10,8,hc);
+var bc=["#4a6fa5","#8a8f5a","#2b2f3a","#6e93c9","#c9b27c"][b];
+if(b<2){r(4,16,8,2,bc);r(3,18,4,4,bc);r(9,18,4,4,bc);if(b===0)r(7,16,2,1,"#d8c04a");else{r(3,19,1,2,"#6d7148");r(12,19,1,2,"#6d7148")}}
+else if(b===2){r(4,16,8,2,bc);r(4,18,3,4,bc);r(9,18,3,4,bc);r(4,18,1,4,"#fff");r(11,18,1,4,"#fff")}
+else if(b===3){r(4,16,8,3,bc);r(5,19,2,3,sk);r(9,19,2,3,sk)}
+else{r(4,16,8,2,bc);r(4,18,3,2,bc);r(9,18,3,2,bc);r(4,20,3,2,sk);r(9,20,3,2,sk)}
+var sc=["#f5f5f5","#e03c2c","#ff77a8","#29adff"][sh];
+if(sh===3){r(3,22,4,1,sk);r(9,22,4,1,sk);r(4,22,2,1,sc);r(10,22,2,1,sc);r(3,23,4,1,sc);r(9,23,4,1,sc)}
+else if(sh===2){r(3,21,4,2,sc);r(9,21,4,2,sc);r(3,23,4,1,"#fff");r(9,23,4,1,"#fff")}
+else{r(3,22,4,2,sc);r(9,22,4,2,sc);r(3,23,4,1,sh?"#fff":"#a8a8b8");r(9,23,4,1,sh?"#fff":"#a8a8b8")}
+var c1=["#ff8fd0","#2e6bd8","#d6336c","#e03c2c","#7f8794","#3b4cc0"][t],u=t===5?"#ffe14d":c1;
+r(4,10,8,6,u);
+if(t===2||t===4||t===5){r(2,10,2,6,u);r(12,10,2,6,u);r(2,16,2,1,sk);r(12,16,2,1,sk)}else{r(2,10,2,3,c1);r(12,10,2,3,c1);r(2,13,2,4,sk);r(12,13,2,4,sk)}
+if(t===1){r(4,12,8,1,"#fff");r(4,14,8,1,"#fff");r(6,10,4,1,"#fff")}
+if(t===2){r(7,10,1,6,"#f4c6d8");r(2,10,1,6,"#fff");r(13,10,1,6,"#fff")}
+if(t===3){r(7,12,2,3,"#fff");r(2,12,2,1,"#fff");r(12,12,2,1,"#fff")}
+if(t===4){r(4,9,8,1,c1);r(5,14,6,2,"#656c78");r(7,10,1,3,"#fff");r(9,10,1,3,"#fff")}
+if(t===5){r(5,10,6,6,c1);r(7,10,2,1,"#ffe14d")}
+r(7,9,2,1,sk);r(5,3,6,6,sk);r(4,5,1,2,sk);r(11,5,1,2,sk);r(6,6,1,1,k);r(9,6,1,1,k);r(7,8,2,1,"#a0303c");
+r(5,2,6,hr===3?1:2,hc);
+if(hr===0){r(5,1,1,1,hc);r(7,0,1,2,hc);r(9,1,1,1,hc)}
+if(hr===2){r(4,9,1,5,hc);r(11,9,1,5,hc)}
+if(hr===4)r(4,1,8,3,hc);
+if(ne===1){r(6,10,4,1,"#f0e2b6");r(7,10,1,1,"#c9a24a");r(9,10,1,1,"#c9a24a")}
+if(ne===2)r(6,9,4,1,k);
+if(ne===3){r(6,10,1,1,"#ffd700");r(9,10,1,1,"#ffd700");r(7,11,2,1,"#ffd700")}
+if(ne===4){r(4,6,1,1,"#fff");r(11,6,1,1,"#fff");r(4,7,1,3,"#fff");r(11,7,1,3,"#fff");r(4,10,1,3,"#fff");r(11,10,1,3,"#fff");r(11,13,2,3,"#e8e8e8");r(11,13,2,1,"#6fa8dc")}
+if(f===1){r(5,5,2,2,"#2a2a4a");r(9,5,2,2,"#2a2a4a");r(7,5,2,1,"#2a2a4a")}
+if(f===2){r(5,5,6,2,"#1e1e1e");r(5,6,6,1,"#555")}
+if(f===3)[5,8].forEach(function(x){r(x,5,3,1,"#c0c0c0");r(x,7,3,1,"#c0c0c0");r(x,6,1,1,"#c0c0c0");r(x+2,6,1,1,"#c0c0c0")});
+if(h===1){r(5,1,6,3,"#d94c3d");r(7,1,2,2,"#fff");r(5,4,7,1,"#d94c3d")}
+if(h===2){r(5,1,6,3,"#c9d86a");r(3,3,10,1,"#aebd4f")}
+if(h===3){r(5,2,6,2,"#d6336c");r(6,2,1,1,"#fff");r(9,3,1,1,"#fff");r(11,3,2,2,"#d6336c")}
+if(h===4){r(5,2,6,1,"#1e90ff");r(5,3,7,1,"#1e90ff")}
+if(h===5){r(4,3,2,1,"#ff77a8");r(10,3,2,1,"#29adff")}
+return '<svg viewBox="0 0 16 24" width="'+16*s+'" height="'+24*s+'" shape-rendering="crispEdges" role="img" aria-label="Pixel avatar">'+o+'</svg>'}
+G.wp=0;G.wc=3;
+function wardrobe(){var n=G.names[G.wp],a=av(n),L=lv(n),c=CAT[G.wc];scr('<h1>WARDROBE</h1><p class="sub">Level up to unlock more 2000s looks.</p>'+(G.names.length>1?'<div>'+G.names.map(function(x,i){return '<button class="btn sm2'+(i===G.wp?" on":"")+'" data-a="wp" data-v="'+i+'">'+esc(x)+'</button>'}).join("")+'</div>':"")+'<div class="wd"><div class="panel">'+AVS(n,9)+'<p class="px">'+esc(n)+' · LV'+L+'</p></div><div><div>'+CAT.map(function(x,i){return '<button class="btn sm2'+(i===G.wc?" on":"")+'" data-a="wc" data-v="'+i+'">'+x[1]+'</button>'}).join("")+'</div><div class="panel">'+c[2].map(function(it,i){var lock=it[1]>L,sel=a[c[0]]===i;return c[3]?'<button class="sw'+(sel?" on":"")+'" style="background:'+it[0]+'" data-a="wset" data-v="'+i+'" aria-label="Colour '+(i+1)+'"></button>':'<button class="btn opt'+(sel?" ok":"")+'" data-a="wset" data-v="'+i+'"'+(lock?" disabled":"")+'>'+it[0]+(lock?' <span class="d">(unlocks at LV'+it[1]+')</span>':"")+'</button>'}).join("")+'</div></div></div><button class="btn" data-a="wdone">Done</button>',1)}
+ACT.wd=function(){G.wp=0;wardrobe()};
+ACT.wp=function(v){G.wp=+v;wardrobe()};
+ACT.wc=function(v){G.wc=+v;wardrobe()};
+ACT.wset=function(v){av(G.names[G.wp])[CAT[G.wc][0]]=+v;save();wardrobe()};
+
+/* ---- start, players, menu, stats ---- */
+function start(){G.on=0;hud();scr('<h1>EXAM WEEK</h1><p class="sub">English final exam prep: lifestyle, school, education, personal perspectives.</p>'+AVd(DEMO,6)+'<p class="px blink">INSERT COIN</p><p class="px">SELECT MODE</p><button class="btn big" data-a="mode" data-v="solo">1 PLAYER: Solo<br><span class="d">Train alone and track your progress.</span></button><button class="btn big" data-a="mode" data-v="duo">2 PLAYERS: Duo<br><span class="d">Pass the device. Coach and guess in turns.</span></button><button class="btn big" data-a="mode" data-v="group">3–6 PLAYERS: Group<br><span class="d">Take turns, help each other, beat your team’s streak.</span></button><button class="btn" data-a="stats">Stats</button>')}
+var MAX={solo:1,duo:2,group:6};
+ACT.mode=function(v){G.mode=v;G.sel=(DB.last||[]).filter(function(n){return DB.p[n]}).slice(0,MAX[v]);chars()};
+function chars(){var need=G.mode==="solo"?1:G.mode==="duo"?2:3,max=MAX[G.mode],all=Object.keys(DB.p);scr('<h1>CHOOSE '+(max===1?"YOUR CHARACTER":"YOUR CHARACTERS")+'</h1><p class="sub">'+(G.mode==="solo"?"Pick one character.":G.mode==="duo"?"Pick two characters.":"Pick 3 to 6 characters.")+' Selected: '+G.sel.length+'/'+max+'</p>'+(all.length?'<div class="crew">'+all.map(function(n){return '<button class="btn pick'+(G.sel.indexOf(n)>-1?" on":"")+'" data-a="pick" data-v="'+esc(n)+'">'+AVS(n,4)+'<span class="px">'+esc(n)+'</span><span class="d">LV'+lv(n)+'</span></button>'}).join("")+'</div>':'<p>No characters yet. Create your first one below.</p>')+'<p class="px">NEW CHARACTER</p><input class="in" id="nn" maxlength="12" placeholder="Name"><button class="btn" data-a="mk">Create</button><br><button class="btn" data-a="go"'+(G.sel.length<need?" disabled":"")+'>Start</button><button class="btn" data-a="wdc"'+(G.sel.length?"":" disabled")+'>Wardrobe</button><button class="btn" data-a="home">Back</button>',1)}
+ACT.pick=function(v){var k=G.sel.indexOf(v);if(k>-1)G.sel.splice(k,1);else if(MAX[G.mode]===1)G.sel=[v];else if(G.sel.length<MAX[G.mode])G.sel.push(v);chars()};
+ACT.mk=function(){var n=$("#nn").value.trim();if(!n||/^(__proto__|constructor|prototype|toString|hasOwnProperty)$/.test(n))return;me(n);av(n);save();if(G.sel.indexOf(n)<0){if(MAX[G.mode]===1)G.sel=[n];else if(G.sel.length<MAX[G.mode])G.sel.push(n)}chars()};
+ACT.go=function(){var need=G.mode==="solo"?1:G.mode==="duo"?2:3;if(G.sel.length<need)return;G.names=G.sel.slice();DB.last=G.names;save();G.on=1;G.turn=0;G.note="";menu()};
+ACT.wdc=function(){G.names=G.sel.slice();G.wp=0;wardrobe()};
+ACT.wdone=function(){G.on?menu():chars()};
+ACT.home=start;ACT.menu=menu=function(){hud();scr('<h1>SELECT GAME</h1><div class="crew">'+G.names.map(function(n){return '<div>'+AVS(n,4)+'<div class="px">'+esc(n)+'</div></div>'}).join("")+'</div><p class="bubble">“'+rnd(LINES)+'”</p><p class="sub">'+(G.mode==="solo"?"Train alone. Everything you do earns XP.":"One device, pass it around. Everyone earns their own XP, the team shares streaks and scores.")+'</p>'+[["cards","Vocab Flashcards","Spaced repetition with the exam word list"],["duel","Would You Rather","Argue your side: claim, reason, example"],["hot","Hot Seat","60-second talk with 3 target words"],["story","Exam Week Story","Choose your path, solve language checks"],["quiz","Streak Quiz","Adaptive grammar and vocabulary"]].map(function(g){return '<button class="btn big" data-a="play" data-v="'+g[0]+'">'+g[1]+'<br><span class="d">'+g[2]+'</span></button>'}).join("")+'<button class="btn" data-a="wd">Wardrobe</button><button class="btn" data-a="stats">Stats</button>')};
+ACT.play=function(v){G.turn=0;GM[v]()};
+function pstat(n){var p=me(n),m=Object.keys(p.w).filter(function(k){return p.w[k]>=3}).length;return '<div class="panel">'+AVS(n,3)+'<b class="px">'+esc(n)+' · LV'+lv(n)+'</b>'+bar(p.xp%100,100,"XP "+p.xp%100+"/100 · total "+p.xp)+bar(m,V.length,"WORDS MASTERED "+m+"/"+V.length)+bar(p.qc,Math.max(p.qa,1),"QUIZ ACCURACY "+p.qc+"/"+p.qa)+'<p>Best streak '+p.best+' · Cards '+p.cards+' · Duels '+p.duels+' · Talks '+p.talks+'</p></div>'}
+ACT.stats=function(){var ns=G.on?G.names:Object.keys(DB.p);scr('<h1>STATS</h1>'+(ns.length?ns.map(function(n){return pstat(n)}).join(""):'<p>No data yet. Play a game first.</p>')+'<p class="sub">A word counts as mastered after you recall it correctly 3 times in a row. Progress is saved in this browser.</p><button class="btn" data-a="back">Back</button>')};
+ACT.back=function(){G.on?menu():start()};
+
+/* ---- flashcards ---- */
+var C;
+function box(n,w){return me(n).w[w]||0}
+GM.cards=function(){C={n:0,hits:0,used:{},cur:0,rev:0};cNext()};
+function cNext(){if(C.n>=10)return cEnd();var g=nm(),pool=shuf(V.map(function(_,i){return i})).filter(function(i){return!C.used[i]}).sort(function(a,b){return box(g,V[a][0])-box(g,V[b][0])});C.cur=pool[Math.random()*8|0];C.used[C.cur]=1;C.rev=0;cDraw()}
+function cDraw(){var e=V[C.cur],g=nm(),co=G.names[(G.turn+1)%G.names.length];hud();scr(bar(C.n,10,"CARD "+(C.n+1)+"/10")+'<div class="panel"><p class="px">'+(G.mode==="solo"?"RECALL THE WORD":esc(co)+" READS · "+esc(g)+" GUESSES")+'</p><p class="big">“'+e[1]+'”</p>'+(C.rev?'<p class="word">'+esc(e[0])+'</p><button class="btn" data-a="crate" data-v="1">Got it</button><button class="btn" data-a="crate" data-v="0">Missed</button>':'<button class="btn" data-a="crev">Reveal</button>')+'<p class="sub">Box '+box(g,e[0])+' of 4. Reach box 3 to master a word.</p></div>')}
+ACT.crev=function(){C.rev=1;cDraw()};
+ACT.crate=function(v){var g=nm(),w=V[C.cur][0],p=me(g);p.w[w]=v==="1"?Math.min(4,box(g,w)+1):0;p.cards++;if(v==="1"){C.hits++;give(g,5)}else give(g,1);C.n++;G.turn++;cNext()};
+function cEnd(){scr('<h1>ROUND COMPLETE</h1><div class="panel"><p class="big">'+C.hits+'/10 recalled</p><p>Missed words come back sooner. Check Stats for your mastery bar.</p></div><button class="btn" data-a="play" data-v="cards">Another round</button><button class="btn" data-a="stats">Stats</button><button class="btn" data-a="menu">Games</button>')}
+
+/* ---- would you rather ---- */
+var D;
+GM.duel=function(){dNext()};
+function dNext(){D={d:rnd(DU),side:0,tw:0};hud();scr('<p class="px">'+esc(nm())+', YOUR TURN</p><div class="panel"><p class="big">Would you rather have…</p><button class="btn opt" data-a="dside" data-v="0">A: '+D.d[0]+'</button><button class="btn opt" data-a="dside" data-v="1">B: '+D.d[1]+'</button></div><p class="sub">Pick one, then argue for it in 45 seconds.</p>')}
+ACT.dside=function(v){D.side=+v;D.tw=Math.random()<.25;var s=D.tw?1-D.side:D.side;scr('<p class="px">'+(D.tw?"TWIST! ARGUE FOR THE OTHER SIDE":"ARGUE FOR YOUR CHOICE")+'</p><div class="panel"><p class="big">'+D.d[s]+'</p><p>Claim: I’d rather… because…<br>Example: Take… / Imagine…<br>Concede: Admittedly… · Rebut: Yet…</p></div><p class="px" id="tm">45</p><button class="btn" data-a="dgo">Start (45 s)</button>')};
+ACT.dgo=function(v,t){t.outerHTML='<button class="btn" data-a="drate0">Done</button>';timer(45,dRate)};
+ACT.drate0=function(){dRate()};
+function dRate(){scr('<p class="px">HOW CONVINCING WAS '+esc(nm())+'?</p><p class="sub">The others decide. Playing solo? Be honest.</p>'+[1,2,3].map(function(r){return '<button class="btn" data-a="drate" data-v="'+r+'">'+"★".repeat(r)+'</button>'}).join(""))}
+ACT.drate=function(v){var g=nm();me(g).duels++;give(g,v*10+(D.tw?10:0));G.turn++;dNext()};
+
+/* ---- hot seat ---- */
+GM.hot=function(){hNext()};
+function hNext(){var ws=shuf(V.filter(function(e){return/^[a-z-]+$/i.test(e[0])})).slice(0,3);D={w:ws,u:[0,0,0]};hud();scr('<p class="px">'+esc(nm())+' IS IN THE HOT SEAT</p><div class="panel"><p class="big">Topic: '+rnd(HT)+'</p><p>Work these words into your talk:</p>'+ws.map(function(e){return '<p><b class="word">'+esc(e[0])+'</b> '+e[1]+'</p>'}).join("")+'</div><p class="px" id="tm">60</p><button class="btn" data-a="hgo">Start (60 s)</button>')}
+ACT.hgo=function(v,t){t.outerHTML='<button class="btn" data-a="hdone">Done</button>';timer(60,hRev)};
+ACT.hdone=function(){hRev()};
+function hRev(){scr('<p class="px">REVIEW</p><div class="panel"><p>Tap the words '+esc(nm())+' used:</p>'+D.w.map(function(e,i){return '<button class="btn opt" data-a="huse" data-v="'+i+'">'+esc(e[0])+'</button>'}).join("")+'</div><p class="px">HOW CONVINCING? (SOLO: BE HONEST)</p>'+[1,2,3].map(function(r){return '<button class="btn" data-a="hrate" data-v="'+r+'">'+"★".repeat(r)+'</button>'}).join(""))}
+ACT.huse=function(v,t){D.u[v]=D.u[v]?0:1;t.classList.toggle("ok")};
+ACT.hrate=function(v){var g=nm(),p=me(g),n=D.u[0]+D.u[1]+D.u[2];D.w.forEach(function(e,i){if(D.u[i])p.w[e[0]]=Math.min(4,(p.w[e[0]]||0)+1)});p.talks++;give(g,n*10+v*5);G.turn++;hNext()};
+
+/* ---- story ---- */
+var st;
+GM.story=function(){st={n:"start",pts:0,tot:0,stress:0,log:[]};sRender()};
+function sRender(){if(st.n==="end")return sEnd();var n=S[st.n],solo=G.mode==="solo";hud();scr(bar(st.stress,12,"STRESS")+'<p class="scene">'+n.t+'</p><div class="panel"><b class="px">LANGUAGE CHECK'+(solo?"":" · "+esc(nm()))+'</b><p class="q">'+n.q+'</p>'+n.o.map(function(o,i){return '<button class="btn opt" data-a="sans" data-v="'+i+'">'+o+'</button>'}).join("")+'<div class="fb" id="fb" hidden></div></div><div id="ch" hidden><p class="px">WHAT DO YOU DO?'+(solo?"":" DISCUSS FIRST")+'</p>'+n.c.map(function(c,i){return '<button class="btn opt" data-a="sch" data-v="'+i+'">'+c[0]+'</button>'}).join("")+'</div>')}
+ACT.sans=function(v,t){var n=S[st.n],ok=+v===n.a;document.querySelectorAll("[data-a=sans]").forEach(function(b){b.disabled=true;if(+b.dataset.v===n.a)b.classList.add("ok")});if(!ok)t.classList.add("no");st.tot++;if(ok){st.pts++;give(nm(),10)}st.log.push({k:n.k,ok:ok});var f=$("#fb");f.className="fb "+(ok?"ok":"no");f.hidden=false;f.textContent=(ok?"Correct! +10 XP. ":"Not quite. ")+n.w;$("#ch").hidden=false};
+ACT.sch=function(v){var c=S[st.n].c[+v];st.stress+=c[2];st.n=c[1];G.turn++;sRender()};
+function sEnd(){var p=st.pts/st.tot,r,m;if(p>=.8&&st.stress<=7){r="Calm and confident";m="You prepared smartly and your English held up."}else if(p>=.6){r="Solid, but tiring";m="Most language choices were good. More rest and planning would help."}else{r="Back to the drawing board";m="Several language traps caught you out. Replay and read the explanations."}scr('<h1>'+r+'</h1><div class="panel"><p>'+m+'</p><p>Language checks: '+st.pts+'/'+st.tot+' · Stress: '+st.stress+'</p><ul>'+st.log.map(function(l){return '<li>'+(l.ok?"✔ ":"✘ ")+l.k+'</li>'}).join("")+'</ul></div><button class="btn" data-a="play" data-v="story">Try another path</button><button class="btn" data-a="menu">Games</button>')}
+
+/* ---- streak quiz ---- */
+var Q;
+function base(e){return e[0].replace(/ \(.*\)/,"").toLowerCase()}
+function vq(){var e=rnd(V),b=base(e),o=[b],s={};s[b.slice(0,5)]=1;shuf(V).forEach(function(d){var x=base(d);if(o.length>3||s[x.slice(0,5)]||e[1].toLowerCase().indexOf(x)>-1||d[1].toLowerCase().indexOf(b)>-1)return;s[x.slice(0,5)]=1;o.push(x)});return[2,"Which word matches this definition? “"+e[1]+"”",o,0,"“"+b+"” means: "+e[1]+"."]}
+function qpick(){var ds=[0,1,-1,2,-2];for(var d=0;d<5;d++){var l=Q.lvl+ds[d];if(l<1||l>3)continue;var p=[];for(var i=0;i<B.length;i++)if(B[i][0]===l&&!Q.used[i])p.push(i);if(p.length)return p[Math.random()*p.length|0]}return-1}
+GM.quiz=function(){Q={lvl:2,streak:0,best:0,score:0,n:0,right:0,used:{},cur:null};qNext()};
+function qNext(){if(Q.n>=10)return qEnd();var q,i=-1;if(Math.random()<.35)q=vq();else{i=qpick();if(i<0)q=vq();else{Q.used[i]=1;q=B[i]}}Q.cur={q:q,order:shuf([0,1,2,3])};hud();scr('<div class="stats"><span class="px">Q'+(Q.n+1)+'/10</span><span class="tag">'+LV[Q.lvl]+'</span><span class="px'+(Q.streak>2?" hot":"")+'">STREAK '+Q.streak+'</span><span class="px">PTS '+Q.score+'</span></div>'+(G.mode==="solo"?"":'<p class="px">'+esc(nm())+' ANSWERS. TEAM STREAK!</p>')+'<div class="panel"><p class="q">'+q[1]+'</p>'+Q.cur.order.map(function(oi){return '<button class="btn opt" data-a="qans" data-v="'+oi+'">'+q[2][oi]+'</button>'}).join("")+'<div class="fb" id="qfb" hidden></div><button class="btn" data-a="qnx" id="nx" hidden>Next</button></div>')}
+ACT.qans=function(v,t){var q=Q.cur.q,ok=+v===q[3],g=nm(),p=me(g),x=0;document.querySelectorAll("[data-a=qans]").forEach(function(b){b.disabled=true;if(+b.dataset.v===q[3])b.classList.add("ok")});if(!ok)t.classList.add("no");Q.n++;p.qa++;if(ok){Q.streak++;Q.best=Math.max(Q.best,Q.streak);p.best=Math.max(p.best,Q.streak);p.qc++;Q.right++;x=q[0]*10+Math.min(Q.streak,5)*2;Q.score+=x;if(Q.streak%2===0&&Q.lvl<3)Q.lvl++}else{Q.streak=0;if(Q.lvl>1)Q.lvl--}give(g,x||1);var f=$("#qfb");f.className="fb "+(ok?"ok":"no");f.hidden=false;f.textContent=(ok?"Correct! +"+x+" XP. ":"Not quite. ")+q[4];$("#nx").hidden=false;$("#nx").textContent=Q.n>=10?"Results":"Next"};
+ACT.qnx=function(){G.turn++;qNext()};
+function qEnd(){var tip=Q.right>=8?"Excellent. You’re ready for C1-level tasks.":Q.right>=5?"Good. Review the explanations of the ones you missed.":"Keep practising. Replay and read the explanations.";scr('<h1>ROUND COMPLETE</h1><div class="panel"><p class="big">'+Q.right+'/10 correct</p><p>'+(G.mode==="solo"?"":"Team ")+'score '+Q.score+' · best streak '+Q.best+' · final level '+LV[Q.lvl]+'</p><p>'+tip+'</p></div><button class="btn" data-a="play" data-v="quiz">Play again</button><button class="btn" data-a="menu">Games</button>')}
+
+start();
+</script>
+</body>
+</html>
