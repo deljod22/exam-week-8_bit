@@ -57,6 +57,7 @@ button:focus-visible,input:focus-visible{outline:4px solid var(--hl);outline-off
 <body>
 <div class="hud" id="hud"></div>
 <main id="app"></main>
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script>
 var S={
 start:{k:"Polite refusal",t:"Monday, 7:40 a.m. Your final English exam is in five days. Your friend Mia texts: “All-night study session at my place tonight? Everyone’s coming.” You’re tired and a little overwhelmed.",q:"Which reply politely declines and suggests an alternative?",o:["No, I can’t. I have other things.","I’d love to, but I’m wiped out. Could we do a shorter session tomorrow instead?","I am not agree with this plan.","Maybe I come, maybe not."],a:1,w:"B softens the refusal (“I’d love to, but…”) and offers an alternative. A is blunt, C contains the typical “I am agree” error, and D is vague and ungrammatical.",c:[["Join the all-night session anyway","night",3],["Go to bed early","sleep",0],["Make a revision plan for the week","plan",1]]},
@@ -103,14 +104,16 @@ var DB={};try{DB=JSON.parse(localStorage.getItem("exw8")||"{}")}catch(e){}
 DB.p=DB.p||{};
 function save(){try{localStorage.setItem("exw8",JSON.stringify(DB))}catch(e){}}
 function me(n){return DB.p[n]||(DB.p[n]={xp:0,w:{},qa:0,qc:0,best:0,talks:0,duels:0,cards:0})}
-var G={mode:"solo",names:["Player"],turn:0,on:0};
+var G={mode:"solo",names:["Player"],turn:0,on:0},N={on:0,players:[],conns:{}};
 function nm(){return G.names[G.turn%G.names.length]}
 function lv(n){return 1+(me(n).xp/100|0)}
 function give(n,x){var a=lv(n);me(n).xp+=x;save();if(lv(n)>a){var u=[];CAT.forEach(function(c){if(!c[3])c[2].forEach(function(it){if(it[1]===lv(n))u.push(it[0])})});G.note=esc(n)+" reached LV"+lv(n)+(u.length?"! Unlocked: "+u.join(", ")+".":"!");G.nl=3}hud()}
 function scr(h,k){clearInterval(T);if(G.nl>0&&--G.nl===0)G.note="";A.innerHTML=h;if(!k)window.scrollTo(0,0)}
 function timer(s,cb){var t=$("#tm");t.textContent=s;T=setInterval(function(){s--;t.textContent=s;if(s<=0){clearInterval(T);cb()}},1000)}
 function bar(a,b,l){return '<div class="lab">'+l+'</div><div class="bar"><i style="width:'+Math.min(100,a/b*100)+'%"></i></div>'}
-function hud(){H.innerHTML=G.on?G.names.map(function(n,i){return '<span class="pl'+(G.mode!=="solo"&&i===G.turn%G.names.length?" on":"")+'">'+AVS(n,1.5)+'<span>'+esc(n)+' LV'+lv(n)+' '+me(n).xp%100+'/100</span></span>'}).join("")+'<button class="btn sm" data-a="menu">Games</button><button class="btn sm2" data-a="home">Menu</button>'+(G.note?'<div class="note">★ '+G.note+' <button class="btn sm2" data-a="wd">Wardrobe</button></div>':""):""}
+function hud(){var nt=G.note?'<div class="note">★ '+G.note+(N.on?'':' <button class="btn sm2" data-a="wd">Wardrobe</button>')+'</div>':"";
+if(N.on){H.innerHTML=N.players.map(function(p){return '<span class="pl">'+AVd(p.av,1.5)+'<span>'+esc(p.name)+'</span></span>'}).join("")+'<span class="pl">YOU LV'+lv(G.me)+' '+me(G.me).xp%100+'/100</span><button class="btn sm" data-a="leave">Leave</button>'+nt;return}
+H.innerHTML=G.on?G.names.map(function(n,i){return '<span class="pl'+(G.mode!=="solo"&&i===G.turn%G.names.length?" on":"")+'">'+AVS(n,1.5)+'<span>'+esc(n)+' LV'+lv(n)+' '+me(n).xp%100+'/100</span></span>'}).join("")+'<button class="btn sm" data-a="menu">Games</button><button class="btn sm2" data-a="home">Menu</button>'+nt:""}
 document.addEventListener("click",function(e){var t=e.target.closest("[data-a]");if(t&&!t.disabled&&ACT[t.dataset.a])ACT[t.dataset.a](t.dataset.v,t)});
 
 
@@ -167,13 +170,13 @@ ACT.wc=function(v){G.wc=+v;wardrobe()};
 ACT.wset=function(v){av(G.names[G.wp])[CAT[G.wc][0]]=+v;save();wardrobe()};
 
 /* ---- start, players, menu, stats ---- */
-function start(){G.on=0;hud();scr('<h1>EXAM WEEK</h1><p class="sub">English final exam prep: lifestyle, school, education, personal perspectives.</p>'+AVd(DEMO,6)+'<p class="px blink">INSERT COIN</p><p class="px">SELECT MODE</p><button class="btn big" data-a="mode" data-v="solo">1 PLAYER: Solo<br><span class="d">Train alone and track your progress.</span></button><button class="btn big" data-a="mode" data-v="duo">2 PLAYERS: Duo<br><span class="d">Pass the device. Coach and guess in turns.</span></button><button class="btn big" data-a="mode" data-v="group">3–6 PLAYERS: Group<br><span class="d">Take turns, help each other, beat your team’s streak.</span></button><button class="btn" data-a="stats">Stats</button>')}
-var MAX={solo:1,duo:2,group:6};
+function start(){G.on=0;hud();scr('<h1>EXAM WEEK</h1><p class="sub">English final exam prep: lifestyle, school, education, personal perspectives.</p>'+AVd(DEMO,6)+'<p class="px blink">INSERT COIN</p><p class="px">SELECT MODE</p><button class="btn big" data-a="mode" data-v="solo">1 PLAYER: Solo<br><span class="d">Train alone and track your progress.</span></button><button class="btn big" data-a="mode" data-v="duo">2 PLAYERS: Duo<br><span class="d">Pass the device. Coach and guess in turns.</span></button><button class="btn big" data-a="mode" data-v="group">3–6 PLAYERS: Group<br><span class="d">Take turns, help each other, beat your team’s streak.</span></button><button class="btn big" data-a="online">ONLINE: Team Quiz<br><span class="d">Play together on separate devices with a room code.</span></button><button class="btn" data-a="stats">Stats</button>')}
+var MAX={solo:1,duo:2,group:6,online:1};
 ACT.mode=function(v){G.mode=v;G.sel=(DB.last||[]).filter(function(n){return DB.p[n]}).slice(0,MAX[v]);chars()};
-function chars(){var need=G.mode==="solo"?1:G.mode==="duo"?2:3,max=MAX[G.mode],all=Object.keys(DB.p);scr('<h1>CHOOSE '+(max===1?"YOUR CHARACTER":"YOUR CHARACTERS")+'</h1><p class="sub">'+(G.mode==="solo"?"Pick one character.":G.mode==="duo"?"Pick two characters.":"Pick 3 to 6 characters.")+' Selected: '+G.sel.length+'/'+max+'</p>'+(all.length?'<div class="crew">'+all.map(function(n){return '<button class="btn pick'+(G.sel.indexOf(n)>-1?" on":"")+'" data-a="pick" data-v="'+esc(n)+'">'+AVS(n,4)+'<span class="px">'+esc(n)+'</span><span class="d">LV'+lv(n)+'</span></button>'}).join("")+'</div>':'<p>No characters yet. Create your first one below.</p>')+'<p class="px">NEW CHARACTER</p><input class="in" id="nn" maxlength="12" placeholder="Name"><button class="btn" data-a="mk">Create</button><br><button class="btn" data-a="go"'+(G.sel.length<need?" disabled":"")+'>Start</button><button class="btn" data-a="wdc"'+(G.sel.length?"":" disabled")+'>Wardrobe</button><button class="btn" data-a="home">Back</button>',1)}
+function chars(){var need=G.mode==="duo"?2:G.mode==="group"?3:1,max=MAX[G.mode],all=Object.keys(DB.p);scr('<h1>CHOOSE '+(max===1?"YOUR CHARACTER":"YOUR CHARACTERS")+'</h1><p class="sub">'+(G.mode==="duo"?"Pick two characters.":G.mode==="group"?"Pick 3 to 6 characters.":"Pick one character.")+' Selected: '+G.sel.length+'/'+max+'</p>'+(all.length?'<div class="crew">'+all.map(function(n){return '<button class="btn pick'+(G.sel.indexOf(n)>-1?" on":"")+'" data-a="pick" data-v="'+esc(n)+'">'+AVS(n,4)+'<span class="px">'+esc(n)+'</span><span class="d">LV'+lv(n)+'</span></button>'}).join("")+'</div>':'<p>No characters yet. Create your first one below.</p>')+'<p class="px">NEW CHARACTER</p><input class="in" id="nn" maxlength="12" placeholder="Name"><button class="btn" data-a="mk">Create</button><br><button class="btn" data-a="go"'+(G.sel.length<need?" disabled":"")+'>'+(G.mode==="online"?"Continue":"Start")+'</button><button class="btn" data-a="wdc"'+(G.sel.length?"":" disabled")+'>Wardrobe</button><button class="btn" data-a="home">Back</button>',1)}
 ACT.pick=function(v){var k=G.sel.indexOf(v);if(k>-1)G.sel.splice(k,1);else if(MAX[G.mode]===1)G.sel=[v];else if(G.sel.length<MAX[G.mode])G.sel.push(v);chars()};
 ACT.mk=function(){var n=$("#nn").value.trim();if(!n||/^(__proto__|constructor|prototype|toString|hasOwnProperty)$/.test(n))return;me(n);av(n);save();if(G.sel.indexOf(n)<0){if(MAX[G.mode]===1)G.sel=[n];else if(G.sel.length<MAX[G.mode])G.sel.push(n)}chars()};
-ACT.go=function(){var need=G.mode==="solo"?1:G.mode==="duo"?2:3;if(G.sel.length<need)return;G.names=G.sel.slice();DB.last=G.names;save();G.on=1;G.turn=0;G.note="";menu()};
+ACT.go=function(){var need=G.mode==="duo"?2:G.mode==="group"?3:1;if(G.sel.length<need)return;if(G.mode==="online"){G.me=G.sel[0];DB.last=[G.me];save();return lobbyMenu()}G.names=G.sel.slice();DB.last=G.names;save();G.on=1;G.turn=0;G.note="";menu()};
 ACT.wdc=function(){G.names=G.sel.slice();G.wp=0;wardrobe()};
 ACT.wdone=function(){G.on?menu():chars()};
 ACT.home=start;ACT.menu=menu=function(){hud();scr('<h1>SELECT GAME</h1><div class="crew">'+G.names.map(function(n){return '<div>'+AVS(n,4)+'<div class="px">'+esc(n)+'</div></div>'}).join("")+'</div><p class="bubble">“'+rnd(LINES)+'”</p><p class="sub">'+(G.mode==="solo"?"Train alone. Everything you do earns XP.":"One device, pass it around. Everyone earns their own XP, the team shares streaks and scores.")+'</p>'+[["cards","Vocab Flashcards","Spaced repetition with the exam word list"],["duel","Would You Rather","Argue your side: claim, reason, example"],["hot","Hot Seat","60-second talk with 3 target words"],["story","Exam Week Story","Choose your path, solve language checks"],["quiz","Streak Quiz","Adaptive grammar and vocabulary"]].map(function(g){return '<button class="btn big" data-a="play" data-v="'+g[0]+'">'+g[1]+'<br><span class="d">'+g[2]+'</span></button>'}).join("")+'<button class="btn" data-a="wd">Wardrobe</button><button class="btn" data-a="stats">Stats</button>')};
@@ -229,6 +232,55 @@ function qNext(){if(Q.n>=10)return qEnd();var q,i=-1;if(Math.random()<.35)q=vq()
 ACT.qans=function(v,t){var q=Q.cur.q,ok=+v===q[3],g=nm(),p=me(g),x=0;document.querySelectorAll("[data-a=qans]").forEach(function(b){b.disabled=true;if(+b.dataset.v===q[3])b.classList.add("ok")});if(!ok)t.classList.add("no");Q.n++;p.qa++;if(ok){Q.streak++;Q.best=Math.max(Q.best,Q.streak);p.best=Math.max(p.best,Q.streak);p.qc++;Q.right++;x=q[0]*10+Math.min(Q.streak,5)*2;Q.score+=x;if(Q.streak%2===0&&Q.lvl<3)Q.lvl++}else{Q.streak=0;if(Q.lvl>1)Q.lvl--}give(g,x||1);var f=$("#qfb");f.className="fb "+(ok?"ok":"no");f.hidden=false;f.textContent=(ok?"Correct! +"+x+" XP. ":"Not quite. ")+q[4];$("#nx").hidden=false;$("#nx").textContent=Q.n>=10?"Results":"Next"};
 ACT.qnx=function(){G.turn++;qNext()};
 function qEnd(){var tip=Q.right>=8?"Excellent. You’re ready for C1-level tasks.":Q.right>=5?"Good. Review the explanations of the ones you missed.":"Keep practising. Replay and read the explanations.";scr('<h1>ROUND COMPLETE</h1><div class="panel"><p class="big">'+Q.right+'/10 correct</p><p>'+(G.mode==="solo"?"":"Team ")+'score '+Q.score+' · best streak '+Q.best+' · final level '+LV[Q.lvl]+'</p><p>'+tip+'</p></div><button class="btn" data-a="play" data-v="quiz">Play again</button><button class="btn" data-a="menu">Games</button>')}
+
+/* ---- online team quiz (PeerJS, host is authoritative) ---- */
+var NETMSG="Could not reach the matchmaking server. Online play needs internet, and school Wi-Fi or the claude.ai preview can block it.";
+function cleanAv(a){var o={};CAT.forEach(function(c){o[c[0]]=Math.max(0,Math.min(c[2].length-1,+(a&&a[c[0]])||0))});return o}
+function cleanP(l){return(Array.isArray(l)?l:[]).slice(0,6).map(function(p){return{name:String(p&&p.name||"Player").slice(0,12),av:cleanAv(p&&p.av)}})}
+function newCode(){var c="",a="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";for(var i=0;i<4;i++)c+=a[Math.random()*a.length|0];return c}
+function uniq(n){var s=String(n||"Player").slice(0,12),b=s,k=2;while(N.players.some(function(p){return p.name===s}))s=b.slice(0,10)+" "+k++;return s}
+function bcast(m){Object.keys(N.conns).forEach(function(k){try{N.conns[k].send(m)}catch(e){}})}
+function reset(){var p=N.peer;N={on:0,players:[],conns:{}};try{p&&p.destroy()}catch(e){}}
+function netFail(msg){reset();hud();scr('<h1>ONLINE</h1><div class="panel"><p>'+esc(msg)+'</p></div><button class="btn" data-a="online">Back</button><button class="btn" data-a="home">Menu</button>')}
+function perr(e){netFail(e&&e.type==="peer-unavailable"?"Room not found. Check the code and try again.":NETMSG)}
+ACT.online=function(){G.mode="online";G.sel=(DB.last||[]).filter(function(n){return DB.p[n]}).slice(0,1);chars()};
+function lobbyMenu(){G.names=[G.me];reset();hud();scr('<h1>ONLINE TEAM QUIZ</h1><p class="sub">Everyone answers on their own device and the team shares one streak. Needs internet.</p><div class="crew"><div>'+AVS(G.me,4)+'<div class="px">'+esc(G.me)+'</div></div></div><button class="btn big" data-a="host">Host a room<br><span class="d">You get a 4-letter code to share.</span></button><p class="px">OR JOIN A ROOM</p><input class="in" id="jc" maxlength="4" placeholder="CODE"><button class="btn" data-a="join">Join</button><button class="btn" data-a="online">Change character</button><button class="btn" data-a="home">Back</button>')}
+function lobbyScreen(){hud();scr('<h1>ROOM '+esc(N.code)+'</h1><p class="sub">'+(N.host?"Share this code. Friends choose Online, then Join a room.":"Connected. Waiting for the host to start.")+'</p><div class="crew">'+N.players.map(function(p){return '<div>'+AVd(p.av,4)+'<div class="px">'+esc(p.name)+'</div></div>'}).join("")+'</div>'+(N.host?'<button class="btn" data-a="ostart">Start Team Quiz</button>':"")+'<button class="btn" data-a="leave">Leave</button>')}
+function bcastLobby(){bcast({t:"lobby",code:N.code,players:N.players.map(function(p){return{name:p.name,av:p.av}})});lobbyScreen()}
+ACT.host=function(){if(typeof Peer==="undefined")return netFail(NETMSG);var tries=0;(function go(){var code=newCode(),p=new Peer("exw8-"+code);N.peer=p;p.on("open",function(){clearTimeout(N.to);N.on=1;N.host=1;N.code=code;N.started=0;N.players=[{id:"host",name:G.me,av:av(G.me)}];N.conns={};N.nm=G.me;lobbyScreen()});p.on("error",function(e){if(e&&e.type==="unavailable-id"&&tries++<5){try{p.destroy()}catch(x){}go()}else{clearTimeout(N.to);perr(e)}});p.on("connection",hostConn)})();N.to=setTimeout(function(){if(!N.on)netFail(NETMSG)},12000)};
+function hostConn(c){c.on("data",function(m){if(!m||typeof m!=="object")return;if(m.t==="join"){if(N.started||N.players.length>=6){c.send({t:"full"});return}var pl={id:c.peer,name:uniq(m.name),av:cleanAv(m.av)};N.players.push(pl);N.conns[c.peer]=c;c.send({t:"hi",name:pl.name});bcastLobby()}else if(m.t==="ans")hostAnswer(c.peer,m.i)});c.on("close",function(){drop(c.peer)})}
+function drop(id){var k=N.players.findIndex(function(p){return p.id===id});if(k<0)return;N.players.splice(k,1);delete N.conns[id];if(!N.started)bcastLobby();else{hud();var c=Q&&Q.cur;if(c&&c.open&&N.players.length&&N.players.every(function(p){return c.ans[p.id]!==undefined}))hostResult()}}
+ACT.join=function(){var code=($("#jc").value||"").trim().toUpperCase();if(code.length!==4)return;if(typeof Peer==="undefined")return netFail(NETMSG);var p=new Peer();N.peer=p;N.host=0;N.nm=G.me;p.on("error",perr);p.on("open",function(){var c=p.connect("exw8-"+code,{reliable:true});N.hc=c;c.on("open",function(){c.send({t:"join",name:G.me,av:av(G.me)})});c.on("data",function(m){try{guestMsg(m)}catch(e){}});c.on("close",function(){if(N.hc===c)netFail("The connection to the host was lost.")})});N.to=setTimeout(function(){if(!N.on)netFail("Could not join. The code may be wrong, or your network blocks online play.")},12000)};
+function guestMsg(m){if(!m||typeof m!=="object")return;
+if(m.t==="hi")N.nm=String(m.name).slice(0,12);
+else if(m.t==="lobby"){clearTimeout(N.to);N.on=1;N.code=String(m.code||"").slice(0,4);N.players=cleanP(m.players);N.started=0;lobbyScreen()}
+else if(m.t==="full")netFail("This room is full or already playing.");
+else if(m.t==="q")onQ({n:+m.n||1,text:String(m.text),opts:(Array.isArray(m.opts)?m.opts:[]).slice(0,4).map(String),lvl:+m.lvl||2,streak:+m.streak||0,score:+m.score||0});
+else if(m.t==="res")onRes({r:m.r&&typeof m.r==="object"?m.r:{},right:String(m.right),why:String(m.why),streak:+m.streak||0,score:+m.score||0,n:+m.n||0,team:!!m.team});
+else if(m.t==="end")onEnd({score:+m.score||0,best:+m.best||0,right:+m.right||0})}
+ACT.leave=function(){reset();start()};
+ACT.ostart=function(){if(!N.host)return;N.started=1;Q={lvl:2,streak:0,best:0,score:0,n:0,right:0,used:{},cur:null};hostNext()};
+function hostNext(){if(Q.n>=10){var e={t:"end",score:Q.score,best:Q.best,right:Q.right};bcast(e);return onEnd(e)}
+var q,i=-1;if(Math.random()<.35)q=vq();else{i=qpick();if(i<0)q=vq();else{Q.used[i]=1;q=B[i]}}
+var order=shuf([0,1,2,3]);Q.cur={q:q,order:order,ans:{},open:1};
+var m={t:"q",n:Q.n+1,text:q[1],opts:order.map(function(oi){return q[2][oi]}),lvl:Q.lvl,streak:Q.streak,score:Q.score};
+bcast(m);onQ(m);Q.cur.to=setTimeout(hostResult,21000)}
+function hostAnswer(id,i){var c=Q.cur;i=+i;if(!c||!c.open||c.ans[id]!==undefined||!(i>=0&&i<4&&i===(i|0)))return;c.ans[id]=i;if(N.players.every(function(p){return c.ans[p.id]!==undefined}))hostResult()}
+function hostResult(){var c=Q.cur;if(!c||!c.open)return;c.open=0;clearTimeout(c.to);var q=c.q,r={},ok=0,np=N.players.length;
+N.players.forEach(function(p){var a=c.ans[p.id],g=a!==undefined&&c.order[a]===q[3];r[p.name]={ok:g};if(g)ok++});
+var team=ok*2>np;Q.n++;if(team){Q.streak++;Q.best=Math.max(Q.best,Q.streak);Q.right++;if(Q.streak%2===0&&Q.lvl<3)Q.lvl++}else{Q.streak=0;if(Q.lvl>1)Q.lvl--}
+var tot=0;N.players.forEach(function(p){var o=r[p.name];o.gain=o.ok?q[0]*10+Math.min(Q.streak,5)*2:0;tot+=o.gain});Q.score+=tot;
+var m={t:"res",r:r,right:q[2][q[3]],why:q[4],streak:Q.streak,score:Q.score,lvl:Q.lvl,n:Q.n,team:team};bcast(m);onRes(m)}
+function onQ(m){N.my=null;hud();scr('<div class="stats"><span class="px">Q'+m.n+'/10</span><span class="tag">'+LV[m.lvl]+'</span><span class="px'+(m.streak>2?" hot":"")+'">TEAM STREAK '+m.streak+'</span><span class="px">TEAM '+m.score+'</span></div><div class="panel"><p class="px" id="tm">20</p><p class="q">'+esc(m.text)+'</p>'+m.opts.map(function(o,i){return '<button class="btn opt" data-a="oans" data-v="'+i+'">'+esc(o)+'</button>'}).join("")+'<div class="fb" id="qfb" hidden></div><div id="res"></div></div>');timer(20,function(){})}
+ACT.oans=function(v,t){document.querySelectorAll("[data-a=oans]").forEach(function(b){b.disabled=true});t.classList.add("on");N.my=+v;var f=$("#qfb");f.className="fb";f.hidden=false;f.textContent="Answer locked. Waiting for the others…";if(N.host)hostAnswer("host",+v);else N.hc.send({t:"ans",i:+v})};
+function onRes(m){clearInterval(T);var my=m.r[N.nm],g=my&&my.ok?Math.max(0,+my.gain||0):0,ok=!!(my&&my.ok);
+document.querySelectorAll("[data-a=oans]").forEach(function(b){b.disabled=true;if(b.textContent===m.right){b.classList.remove("on");b.classList.add("ok")}else if(b.classList.contains("on")){b.classList.remove("on");b.classList.add("no")}});
+var p=me(G.me);p.qa++;if(ok){p.qc++;p.best=Math.max(p.best,m.streak)}give(G.me,g||1);
+var f=$("#qfb");f.className="fb "+(ok?"ok":"no");f.hidden=false;f.textContent=(ok?"Correct! +"+g+" XP. ":N.my==null?"Time’s up. ":"Not quite. ")+m.why;
+$("#res").innerHTML='<p class="px">'+(m.team?"TEAM POINT!":"NO TEAM POINT")+' · STREAK '+m.streak+'</p>'+Object.keys(m.r).map(function(k){return '<span class="tag">'+(m.r[k]&&m.r[k].ok?"✔ ":"✘ ")+esc(k)+'</span> '}).join("")+(N.host?'<br><button class="btn" data-a="onext">'+(m.n>=10?"Results":"Next question")+'</button>':'<p class="sub">Waiting for the host…</p>')}
+ACT.onext=function(){hostNext()};
+function onEnd(m){scr('<h1>TEAM RESULT</h1><div class="panel"><p class="big">'+m.right+'/10 team points</p><p>Team score '+m.score+' · best team streak '+m.best+'</p></div>'+(N.host?'<button class="btn" data-a="olobby">Play again</button>':'<p class="sub">Waiting for the host to start another round…</p>')+'<button class="btn" data-a="leave">Leave</button>')}
+ACT.olobby=function(){if(!N.host)return;N.started=0;bcastLobby()};
 
 start();
 </script>
